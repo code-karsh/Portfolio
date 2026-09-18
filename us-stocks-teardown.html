@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buying US Stocks from India: A Teardown of INDmoney, Vested and Groww</title>
+<meta name="description" content="How Indian residents buy US stocks in 2026: LRS limits, TCS, funding flows, fractional shares and FX costs across INDmoney, Vested and Groww.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F6F4; --panel:#FFFFFF; --ink:#16202E; --muted:#5B6573; --rule:#D9DDE2;
+  --rupee:#2E5E8C; --dollar:#3F7F5F; --leak:#B86A1F; --leak-soft:#F3E4D3;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --serif:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#121820; --panel:#19212B; --ink:#E7EAEE; --muted:#9AA4B1; --rule:#2A3340;
+    --rupee:#7FA8D6; --dollar:#7DBE98; --leak:#E3A15C; --leak-soft:#3A2C1E;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121820; --panel:#19212B; --ink:#E7EAEE; --muted:#9AA4B1; --rule:#2A3340;
+  --rupee:#7FA8D6; --dollar:#7DBE98; --leak:#E3A15C; --leak-soft:#3A2C1E;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;font-variant-numeric:tabular-nums}
+a{color:var(--rupee)}
+a:focus-visible{outline:2px solid var(--rupee);outline-offset:2px}
+.wrap{max-width:760px;margin:0 auto;padding:0 22px}
+.wide{max-width:1020px;margin:0 auto;padding:0 22px}
+header{padding:72px 0 36px;border-bottom:1px solid var(--rule)}
+.byline{color:var(--muted);font-size:15px;margin:0 0 18px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,5.4vw,54px);line-height:1.08;letter-spacing:-0.01em;margin:0 0 22px}
+.dek{font-size:20px;line-height:1.5;color:var(--muted);margin:0;max-width:640px}
+h2{font-family:var(--serif);font-weight:600;font-size:30px;line-height:1.2;margin:64px 0 14px}
+h3{font-size:18px;font-weight:600;margin:32px 0 6px}
+p{margin:0 0 16px}
+.muted{color:var(--muted)}
+.small{font-size:14.5px}
+
+/* The one bold element: where the round-trip cost goes */
+.leak{margin:44px 0 8px;padding:30px 0 34px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.leak-figure{font-family:var(--serif);font-size:clamp(52px,9vw,96px);line-height:1;font-weight:600;color:var(--leak);margin:0}
+.leak-caption{font-size:18px;margin:10px 0 26px;max-width:620px}
+.bar{display:flex;height:54px;border-radius:3px;overflow:hidden}
+.seg{display:flex;align-items:center;padding:0 12px;font-size:14px;font-weight:500;color:#fff;white-space:nowrap;overflow:hidden;min-width:0}
+.fx-in{background:var(--leak);flex:990}
+.fee-buy{background:var(--rupee);flex:248}
+.fee-sell{background:var(--rupee);flex:247;opacity:.78}
+.fx-out{background:var(--leak);flex:985;opacity:.78}
+.bar-key{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px;font-size:14px;color:var(--muted)}
+.bar-key b{display:block;color:var(--ink);font-weight:600;font-size:16px}
+@media (max-width:640px){.bar-key{grid-template-columns:repeat(2,1fr)}.seg{font-size:0;padding:0}}
+
+.ledger{width:100%;border-collapse:collapse;margin:18px 0 8px;font-size:15.5px}
+.ledger td{padding:11px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+.ledger td:last-child,.ledger td:nth-child(3){text-align:right;white-space:nowrap}
+.ledger .loss{color:var(--leak);font-weight:500}
+.ledger tr.total td{font-weight:600;border-bottom:2px solid var(--ink)}
+
+.table-scroll{overflow-x:auto;margin:20px 0 10px;border:1px solid var(--rule);border-radius:4px;background:var(--panel)}
+.compare{border-collapse:collapse;width:100%;min-width:860px;font-size:14.5px;line-height:1.45}
+.compare th,.compare td{padding:12px 14px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:top}
+.compare thead th{font-size:15px;font-weight:600;background:var(--paper)}
+.compare tbody th{font-weight:500;color:var(--muted);width:150px}
+.compare tr:last-child th,.compare tr:last-child td{border-bottom:0}
+
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--rule);margin-top:18px}
+.rule{padding:18px 18px 18px 0;border-bottom:1px solid var(--rule)}
+.rule:nth-child(odd){border-right:1px solid var(--rule)}
+.rule:nth-child(even){padding-left:18px}
+.rule b{display:block;font-size:22px;font-family:var(--serif);font-weight:600;margin-bottom:2px}
+@media (max-width:640px){.rules{grid-template-columns:1fr}.rule:nth-child(odd){border-right:0}.rule:nth-child(even){padding-left:0}}
+
+ol.journey{list-style:none;counter-reset:step;padding:0;margin:20px 0}
+ol.journey li{counter-increment:step;position:relative;padding:0 0 20px 52px;border-left:1px solid var(--rule);margin-left:15px}
+ol.journey li:last-child{border-left-color:transparent}
+ol.journey li::before{content:counter(step);position:absolute;left:-16px;top:-2px;width:31px;height:31px;border-radius:50%;background:var(--paper);border:1px solid var(--ink);display:grid;place-items:center;font-size:14px;font-weight:600}
+ol.journey li strong{display:block}
+.pain{color:var(--leak)}
+
+.platform{padding:4px 0 8px}
+.verdict{font-family:var(--serif);font-style:italic;font-size:19px;margin:6px 0 12px}
+
+.build{border-left:3px solid var(--dollar);padding:2px 0 2px 20px;margin:26px 0}
+.build h3{margin-top:0}
+.metric{font-size:14.5px;color:var(--muted)}
+
+footer{margin:72px 0 0;padding:30px 0 60px;border-top:1px solid var(--rule)}
+.sources{font-size:14px;color:var(--muted);padding-left:18px}
+.sources li{margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <p class="byline">Product teardown by Utkarsh Pandey, IIT (ISM) Dhanbad. Research current as of September 2026.</p>
+    <h1>Buying a US stock from India costs more in the currency than in the trade</h1>
+    <p class="dek">A teardown of how Indian residents invest in US stocks on INDmoney, Vested and Groww: the rules they operate under, how money actually moves, what it costs, and what a new entrant should build first.</p>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <h2>The short version</h2>
+  <p>Every platform advertises low or zero fees, and the brokerage really is small at about 0.25% a trade. The bigger cost is the rupee to dollar conversion, which banks price at roughly 0.5% to 1.2% each way. On a simple round trip, the FX spread makes up about 80% of what the investor loses.</p>
+  <p>The second finding is that this is a money movement business more than a trading business. Groww shut its first US stocks product in 2024 not because trading was hard, but because remittances, withdrawal fees and settlement delays broke the experience. INDmoney and Vested grew by owning that plumbing.</p>
+  <p>The timing matters. Since the GIFT City Global Access Provider (GAP) framework opened in August 2025, the big domestic brokers have received approval to offer US stocks. Upstox launched in September 2026, and Groww was testing a relaunch as of mid-2026. The incumbents' lead is now in funding speed, cost transparency and tax tooling, not access.</p>
+
+  <div class="leak" role="figure" aria-labelledby="leak-cap">
+    <p class="leak-figure">₹2,470</p>
+    <p class="leak-caption" id="leak-cap">lost on a ₹1,00,000 round trip into a US stock and back, with the price and exchange rate unchanged. Most of it is currency spread, not brokerage.</p>
+    <div class="bar" aria-hidden="true">
+      <div class="seg fx-in">FX in</div>
+      <div class="seg fee-buy">Buy</div>
+      <div class="seg fee-sell">Sell</div>
+      <div class="seg fx-out">FX out</div>
+    </div>
+    <div class="bar-key">
+      <div><b>₹990</b>FX spread going in</div>
+      <div><b>₹248</b>Brokerage to buy</div>
+      <div><b>₹247</b>Brokerage to sell</div>
+      <div><b>₹985</b>FX spread coming back</div>
+    </div>
+  </div>
+  <p class="small muted">Assumptions: reference rate ₹95 per USD, 1% bank FX spread each way (inside INDmoney's published 0.5% to 1.2% band), 0.25% brokerage on buy and sell, no GST, no stock or currency movement. Worked steps are below.</p>
+
+  <h2>The rules every platform works within</h2>
+  <p>No app can change these. They shape the product, the funnel and the support queue.</p>
+  <div class="rules">
+    <div class="rule"><b>$250,000 a year</b>Liberalised Remittance Scheme (LRS) cap per resident, across all purposes: travel, education, gifts and investing combined.</div>
+    <div class="rule"><b>Nil TCS to ₹10 lakh</b>No tax collected at source on the first ₹10 lakh of total LRS remittances in a financial year. The threshold rose from ₹7 lakh in Budget 2025.</div>
+    <div class="rule"><b>20% TCS above that</b>For investments, 20% is collected upfront on the excess. It is refundable against income tax, but the cash is locked until the return is filed. Budget 2026 cut rates for education and medical, not investing.</div>
+    <div class="rule"><b>25% on dividends</b>US withholding on dividends drops from 30% to 25% once a W-8BEN form is filed, claimable as a foreign tax credit in India.</div>
+    <div class="rule"><b>24 months for long term</b>Gains on foreign shares held 24 months or more are taxed at 12.5%. Shorter holdings are taxed at slab rates.</div>
+    <div class="rule"><b>Schedule FA every year</b>Foreign holdings must be declared in the income tax return, which makes clean tax reports a retention feature, not a nice-to-have.</div>
+  </div>
+  <p class="small muted" style="margin-top:14px">A concrete TCS example: someone who invests ₹15 lakh in US stocks in FY 2026-27, with no other remittances, has ₹1,00,000 collected upfront (20% of the ₹5 lakh above the threshold). The limit is cumulative across all banks, so a platform cannot see the full picture on its own.</p>
+
+  <h2>The investor journey, step by step</h2>
+  <p>Mapped from each platform's published flows. Amber notes mark where users drop off or raise tickets.</p>
+  <ol class="journey">
+    <li><strong>Open an account and complete KYC</strong>PAN and Aadhaar based, fully digital on all three. INDmoney files the W-8BEN on the user's behalf. <span class="pain">A second KYC just for US stocks is a drop-off point for existing domestic users.</span></li>
+    <li><strong>Declare the remittance under LRS</strong>Every transfer needs a Form A2 declaration and bank compliance checks. INDmoney handles A2 inside the app. On the older route, users go to their bank portal with SWIFT details. <span class="pain">Income or source-of-funds document requests surprise first-time investors.</span></li>
+    <li><strong>Convert rupees to dollars</strong>The bank applies its spread. Apps show a rate, but rarely the total dollars lost versus the reference rate. <span class="pain">The largest cost in the journey, and the least visible.</span></li>
+    <li><strong>Wait for the wallet to be credited</strong>INDmoney's GIFT City wallet is typically credited within hours via partner banks. A classic SWIFT transfer takes 2 to 3 business days. <span class="pain">"Where is my money" is the top support theme for this category.</span></li>
+    <li><strong>Buy, including fractions</strong>Fractional investing from $1 on all active platforms, which matters when one share of a large US company costs more than a month's SIP. US market hours are late evening to early morning in India.</li>
+    <li><strong>Receive dividends</strong>Credited in USD after 25% withholding. Small fractional dividends sit idle unless the app offers reinvestment.</li>
+    <li><strong>Sell and bring money home</strong>Brokerage again, FX spread again, and on some platforms a withdrawal fee. <span class="pain">This step is what ended Groww's first product.</span></li>
+    <li><strong>File taxes</strong>Schedule FA, capital gains and Form 67 for the foreign tax credit. Both INDmoney and Vested generate reports, which keeps users from leaving at tax time.</li>
+  </ol>
+
+  <h2>Platform by platform</h2>
+
+  <div class="platform">
+    <h3>INDmoney</h3>
+    <p class="verdict">Won by turning remittance into a feature.</p>
+    <p>INDmoney runs US stocks through its own IFSCA-licensed entity in GIFT City and has been an authorised Global Access Provider since August 2025. Shares are held with DriveWealth and Alpaca in the US. The key product decision is the funding flow: direct integrations with HDFC, ICICI, Kotak, Federal and IDFC, Form A2 filed in-app, live tracking, and money typically in the wallet within hours rather than days.</p>
+    <p>Pricing is 0.25% brokerage capped at $25 per order, with no account, maintenance, platform or withdrawal fee. The bank's FX spread of 0.5% to 1.2% is disclosed separately. It also takes over users from other apps, such as Fi's US stocks customers in 2026, and claims more than 3 million US stock accounts.</p>
+    <p class="small muted">Gap: US stocks sit inside a super-app with Indian stocks, mutual funds and loans, so discovery depends on the user already knowing they want global exposure.</p>
+  </div>
+
+  <div class="platform">
+    <h3>Vested</h3>
+    <p class="verdict">The specialist that sells breadth and guidance.</p>
+    <p>Vested is built only for global investing. Its US broker-dealer, VF Securities, is a FINRA member with custody through DriveWealth, and Vested also holds IFSCA GAP and broker-dealer authorisation at GIFT City. Beyond US stocks and ETFs, it offers managed thematic portfolios, 350+ global funds, pre-IPO private market deals from $10,000, and RSU/ESOP transfers.</p>
+    <p>It uses a freemium model: Basic has 0.25% brokerage, Premium (₹375 a month billed annually) cuts it to 0.15%, both capped at $35. INR withdrawals above $100 are free, smaller ones cost $3, and USD withdrawals cost $5. Funding runs through partner banks such as HDFC, ICICI and Axis, or a guided transfer from any bank. As of June 2026 it reported 4 lakh+ investors and ₹10,000 crore+ in assets.</p>
+    <p class="small muted">Gap: the paid plan only pays back for high-turnover users, and the product assumes some investing confidence. That suits its affluent, RSU-holding audience but limits mass reach.</p>
+  </div>
+
+  <div class="platform">
+    <h3>Groww</h3>
+    <p class="verdict">A cautionary tale, now attempting a comeback.</p>
+    <p>Groww launched US stocks in 2020 through a US broker partner. It stopped onboarding new users around early 2023, halted new purchases and wallet top-ups from 27 February 2024, and moved existing holders out. In its own words, remittance processes, high withdrawal fees and settlement delays created a broken experience it could not fix. Reports at the time put active US stock investors at only about 2,000, tiny against its domestic base.</p>
+    <p>In June 2026 Groww received IFSCA approval to offer international investing through GIFT City, and in July management said the product was in testing, starting with US stocks. The GIFT City route directly addresses the reasons it quit: domestic-style funding and no withdrawal charges when bringing funds home.</p>
+    <p class="small muted">Lesson: distribution alone does not make this category work. A 13 million active-user broker could not make US stocks stick while money movement was slow and expensive.</p>
+  </div>
+
+  <h2>Side by side</h2>
+</div>
+
+<div class="wide">
+  <div class="table-scroll" tabindex="0" aria-label="Platform comparison table, scrolls horizontally">
+    <table class="compare">
+      <thead>
+        <tr><th scope="col"></th><th scope="col">INDmoney</th><th scope="col">Vested</th><th scope="col">Groww</th><th scope="col">Upstox (context)</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">Status, Sept 2026</th><td>Live, 3M+ US stock accounts claimed</td><td>Live, 4 lakh+ investors</td><td>Exited 2024; GIFT City relaunch in testing per July reports</td><td>Launched September 2026</td></tr>
+        <tr><th scope="row">Route and regulator</th><td>GIFT City, IFSCA GAP since Aug 2025</td><td>US broker-dealer (FINRA) plus IFSCA GAP and broker-dealer authorisation</td><td>Earlier: US broker partner. Now: IFSCA approval</td><td>IFSC branch, IFSCA broker-dealer and GAP</td></tr>
+        <tr><th scope="row">US custody partners</th><td>DriveWealth, Alpaca</td><td>DriveWealth</td><td>Not yet disclosed</td><td>Not covered here</td></tr>
+        <tr><th scope="row">Funding flow</th><td>In-app via 5 partner banks, A2 in-app, live tracking</td><td>Partner banks (HDFC, ICICI, Axis) or guided transfer from any bank</td><td>Earlier: USD wallet top-ups, cited as a pain point</td><td>INR from supported Indian banks</td></tr>
+        <tr><th scope="row">Brokerage</th><td>0.25%, max $25 per order</td><td>0.25% Basic, 0.15% Premium, max $35</td><td>Not yet announced</td><td>Not covered here</td></tr>
+        <tr><th scope="row">FX conversion</th><td>0.5% to 1.2%, charged by bank</td><td>Bank or partner spread; not listed as a flat fee</td><td>Not yet announced</td><td>Converted from INR to USD</td></tr>
+        <tr><th scope="row">Withdrawal fee</th><td>Zero</td><td>Free above $100 in INR; $3 below; $5 in USD</td><td>Earlier: high, cited as a reason for exit</td><td>Not covered here</td></tr>
+        <tr><th scope="row">Fractional minimum</th><td>$1</td><td>$1 to invest, fractions to $0.01</td><td>Not yet announced</td><td>$1</td></tr>
+        <tr><th scope="row">Beyond stocks</th><td>Full Indian super-app, tax reports, auto W-8BEN</td><td>Managed portfolios, global funds, private markets, RSU transfer</td><td>Positioning as a wider wealth platform</td><td>8,000+ stocks, 2,000+ ETFs, after-hours order queueing</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="small muted" style="max-width:760px">Fees are from each company's own pricing pages where available. Third-party blogs quote different caps, so always check the live pricing page before comparing.</p>
+</div>
+
+<div class="wrap">
+
+  <h2>The worked round trip</h2>
+  <p>₹1,00,000 in, one stock bought and sold at the same price, exchange rate unchanged at ₹95.</p>
+  <table class="ledger">
+    <tbody>
+      <tr><td>Reference conversion</td><td class="muted">₹1,00,000 at ₹95</td><td>$1,052.63</td><td></td></tr>
+      <tr><td>Bank FX spread (1%)</td><td class="muted">Effective rate ₹95.95</td><td>$1,042.21</td><td class="loss">−₹990</td></tr>
+      <tr><td>Brokerage to buy (0.25%)</td><td class="muted">$2.61</td><td>$1,039.60</td><td class="loss">−₹248</td></tr>
+      <tr><td>Brokerage to sell (0.25%)</td><td class="muted">$2.60</td><td>$1,037.00</td><td class="loss">−₹247</td></tr>
+      <tr><td>Bank FX spread back (1%)</td><td class="muted">Effective rate ₹94.05</td><td>₹97,530</td><td class="loss">−₹985</td></tr>
+      <tr class="total"><td>Total leakage</td><td></td><td>2.47%</td><td class="loss">−₹2,470</td></tr>
+    </tbody>
+  </table>
+  <p>Put differently, a long-term investor needs about a 2.5% gain just to break even on a single entry and exit. The FX spread is roughly four times the brokerage, yet brokerage is the number most marketing focuses on.</p>
+
+  <h2>What I would build first as a new entrant</h2>
+  <p>Access is now a commodity: every large broker can list 8,000+ US stocks from $1. These three bets target the frictions that decided winners and losers so far.</p>
+
+  <div class="build">
+    <h3>Show dollars received, not just a rate</h3>
+    <p>Before a user confirms a transfer, show one line: "₹1,00,000 becomes $1,042.21. That is ₹990 less than the market rate." Add the expected cost to bring it back. It turns the least visible cost into a trust signal and makes a tighter spread a selling point the user can see.</p>
+    <p class="metric">Measure: transfer confirmation rate, FX-related support tickets, repeat funding within 30 days.</p>
+  </div>
+
+  <div class="build">
+    <h3>A TCS headroom meter</h3>
+    <p>Track the user's platform remittances against the ₹10 lakh threshold, let them add remittances made elsewhere in the year, and warn before a transfer crosses the line, with the exact TCS amount and when it can be claimed back. No platform can see other banks, so self-declaration is the practical first version.</p>
+    <p class="metric">Measure: surprise-TCS tickets, share of users who add outside remittances, large-ticket transfer completion.</p>
+  </div>
+
+  <div class="build">
+    <h3>Treat withdrawal as a launch-critical flow</h3>
+    <p>Groww's exit list reads like a withdrawal backlog. Publish a withdrawal time promise, show live tracking back to the Indian bank, and make small withdrawals free. For a broker with an existing domestic base, add a one-tap "move to Indian account" from the US wallet so money never feels trapped.</p>
+    <p class="metric">Measure: median time from sell to INR credited, withdrawal ticket rate, 90-day retention of users who have withdrawn once.</p>
+  </div>
+
+  <h2>Open questions I would validate</h2>
+  <p>Which matters more to first-time US investors: speed of funding or visible cost? Does fractional investing pull in genuinely new users or just smaller tickets from existing ones? How much of the TCS problem disappears for users investing under ₹10 lakh a year, which is likely most retail users? These are the first things I would test with user interviews and funnel data.</p>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <h3 style="margin-top:0">Sources</h3>
+    <ol class="sources">
+      <li>INDmoney, INR to USD conversion and forex markup (official fee table), 2026</li>
+      <li>INDmoney, Investing in US stocks via GIFT City and US stocks product pages, 2026</li>
+      <li>Vested Finance, India home page, pricing and FAQs, updated August 2026</li>
+      <li>Inc42 and Business Today, Groww discontinues US stocks offering, January 2024; Groww statement on X, January 2024</li>
+      <li>Business Standard, Inc42, Outlook Business, GIFT City approvals for Zerodha, Groww, Angel One and Upstox, June 2026</li>
+      <li>Business Standard, Global stock trade via GIFT City doubles in Q1 FY27, August 2026</li>
+      <li>Inc42 and Indian Startup News, Upstox launches US stock investing, September 2026</li>
+      <li>ICICI Bank, ClearTax, BookMyForex, TCS on LRS remittances under Finance Act 2026</li>
+    </ol>
+    <p class="small muted">Independent research for learning purposes. Not investment advice. Fees and regulations change often; verify on official pages before acting.</p>
+  </div>
+</footer>
+
+</body>
+</html>
